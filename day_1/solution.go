@@ -34,7 +34,39 @@ func SolvePart1(lines []string) int {
 }
 
 func SolvePart2(lines []string) int {
-	return 0
+	leftIntSlice, rightIntSlice := stringSliceToDualIntSlice(lines)
+
+	if len(leftIntSlice) != len(rightIntSlice) {
+		panic("arrays are not of the same length")
+	}
+
+	leftSliceMap := make(map[int]int)
+
+	for i := range leftIntSlice {
+		_, keyIsPresent := leftSliceMap[leftIntSlice[i]]
+
+		if !keyIsPresent {
+			leftSliceMap[leftIntSlice[i]] = 0
+		}
+	}
+
+	for i := range rightIntSlice {
+		_, keyIsPresent := leftSliceMap[rightIntSlice[i]]
+
+		if keyIsPresent {
+			val := leftSliceMap[rightIntSlice[i]]
+			val++
+			leftSliceMap[rightIntSlice[i]] = val
+		}
+	}
+
+	var similarityScoreTotal int
+
+	for k, v := range leftSliceMap {
+		similarityScoreTotal += (k * v)
+	}
+
+	return similarityScoreTotal
 }
 
 func stringSliceToDualIntSlice(lines []string) ([]int, []int) {
